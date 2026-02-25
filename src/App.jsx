@@ -1,42 +1,37 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { ProtectedRoute } from './components/ProtectedRoute';
-import Login from './components/Login';
 import AdminLogin from './components/AdminLogin';
 import DocumentVault from './components/DocumentVault';
 import SecureMessaging from './components/SecureMessaging';
-import Dashboard from './components/Dashboard';
 import PaymentCenter from './components/PaymentCenter';
 import CaseTracking from './components/CaseTracking';
-import { 
-  createUserWithEmailAndPassword, 
-  signInWithEmailAndPassword, 
-  signOut, 
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  signOut,
   onAuthStateChanged,
   sendEmailVerification
 } from 'firebase/auth';
 import { getDoc, doc, setDoc } from 'firebase/firestore';
-import { 
-  Home, 
-  LogOut, 
-  Shield, 
-  Users, 
-  FileText, 
-  MessageSquare, 
-  CreditCard, 
-  BarChart3, 
-  CheckCircle, 
-  Clock, 
-  AlertCircle, 
-  Upload, 
-  ChevronRight, 
-  ArrowLeft, 
-  Mail, 
-  Phone, 
-  Globe, 
-  Briefcase, 
+import {
+  Home,
+  LogOut,
+  Shield,
+  FileText,
+  MessageSquare,
+  CreditCard,
+  BarChart3,
+  CheckCircle,
+  Clock,
+  ChevronRight,
+  ArrowLeft,
+  Mail,
+  Briefcase,
   GraduationCap
 } from 'lucide-react';
+
+
 
 // Import your Firebase config
 import { auth, db } from './firebase/config';
@@ -91,6 +86,7 @@ function App() {
           <div style={{ width: '60px', height: '60px', border: '4px solid rgba(255,255,255,0.3)', borderTop: '4px solid white', borderRadius: '50%', margin: '0 auto 20px', animation: 'spin 1s linear infinite' }}></div>
           <div style={{ fontSize: '20px' }}>Loading Portal...</div>
         </div>
+        <style>{`@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }`}</style>
       </div>
     );
   }
@@ -133,18 +129,11 @@ function App() {
           </ProtectedRoute>
         } />
         
-        {/* Protected Admin Routes */}
-        <Route path="/admin/dashboard" element={
-          <ProtectedRoute requireAdmin={true}>
-            <AdminCRM user={user} />
-          </ProtectedRoute>
-        } />
-        
         {/* Default redirect - based on auth state */}
         <Route path="/" element={
           user ? (
             userRole === 'admin' ? (
-              <Navigate to="/admin/dashboard" />
+              <Navigate to="/dashboard" />
             ) : (
               <Navigate to="/dashboard" />
             )
@@ -197,11 +186,8 @@ function AuthPage() {
   e.preventDefault();
   setError('');
   setLoading(true);
-  
+
   try {
-    // Clear any existing errors
-    setError('');
-    
     // Basic validation
     if (!formData.email || !formData.password) {
       throw new Error('Please enter both email and password');
@@ -342,7 +328,7 @@ function AuthPage() {
       style={{ width: '100%', padding: '12px 16px', border: '2px solid #e5e7eb', borderRadius: '10px', fontSize: '15px' }} 
       placeholder="your@email.com" 
       required 
-      autocomplete="email"
+      autoComplete="email"
     />
   </div>
 
@@ -358,7 +344,7 @@ function AuthPage() {
       placeholder="••••••••" 
       required 
       minLength={6}
-      autocomplete="current-password"
+      autoComplete="current-password"
     />
   </div>
 
@@ -518,8 +504,6 @@ function AuthPage() {
 
 // ============= MEMBER PORTAL =============
 function MemberPortal({ user }) {
-  const [activeFeature, setActiveFeature] = useState(null);
-  
   const handleLogout = async () => {
     await signOut(auth);
   };
@@ -648,83 +632,6 @@ function MemberPortal({ user }) {
               </div>
             );
           })}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// ============= ADMIN CRM =============
-function AdminCRM({ user }) {
-  const handleLogout = async () => {
-    await signOut(auth);
-  };
-
-  const stats = [
-    { label: 'Total Clients', value: '0', icon: Users, color: '#3b82f6' },
-    { label: 'Active Cases', value: '0', icon: FileText, color: '#10b981' },
-    { label: 'Messages', value: '0', icon: MessageSquare, color: '#8b5cf6' },
-    { label: 'Revenue', value: '€0', icon: BarChart3, color: '#f59e0b' }
-  ];
-
-  return (
-    <div style={{ minHeight: '100vh', background: '#f3f4f6' }}>
-      <header style={{ background: 'linear-gradient(135deg, #1f2937, #111827)', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', padding: '20px 24px', color: 'white' }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-              <Shield size={28} />
-              <h1 style={{ fontSize: '28px', fontWeight: 'bold' }}>Admin CRM</h1>
-            </div>
-            <p style={{ fontSize: '14px', opacity: 0.8 }}>Nordic Riser AB - Management Portal</p>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ textAlign: 'right' }}>
-              <p style={{ fontSize: '14px', fontWeight: '600' }}>{user.email}</p>
-              <p style={{ fontSize: '12px', opacity: 0.8 }}>Administrator</p>
-            </div>
-            <button onClick={handleLogout} style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 20px', background: '#ef4444', color: 'white', border: 'none', borderRadius: '8px', cursor: 'pointer', fontWeight: '600' }}>
-              <LogOut size={18} />
-              Logout
-            </button>
-          </div>
-        </div>
-      </header>
-
-      <div style={{ padding: '40px 24px', maxWidth: '1400px', margin: '0 auto' }}>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', gap: '24px', marginBottom: '32px' }}>
-          {stats.map((stat, idx) => {
-            const Icon = stat.icon;
-            return (
-              <div key={idx} style={{ background: 'white', borderRadius: '12px', padding: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '16px' }}>
-                  <div style={{ width: '48px', height: '48px', background: `${stat.color}15`, borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                    <Icon size={24} color={stat.color} />
-                  </div>
-                  <span style={{ fontSize: '12px', color: '#10b981', fontWeight: '600' }}>+0%</span>
-                </div>
-                <p style={{ fontSize: '14px', color: '#6b7280', marginBottom: '4px' }}>{stat.label}</p>
-                <p style={{ fontSize: '32px', fontWeight: 'bold', color: '#1f2937' }}>{stat.value}</p>
-              </div>
-            );
-          })}
-        </div>
-
-        <div style={{ background: 'white', borderRadius: '12px', padding: '32px', boxShadow: '0 1px 3px rgba(0,0,0,0.1)' }}>
-          <h2 style={{ fontSize: '24px', fontWeight: '600', color: '#1f2937', marginBottom: '16px' }}>Admin Dashboard</h2>
-          <div style={{ padding: '32px', background: 'linear-gradient(135deg, #eff6ff, #dbeafe)', borderRadius: '12px', textAlign: 'center' }}>
-            <Shield size={64} color="#3b82f6" style={{ margin: '0 auto 20px' }} />
-            <h3 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e40af', marginBottom: '12px' }}>Admin Portal Active</h3>
-            <p style={{ fontSize: '16px', color: '#1e40af', marginBottom: '24px' }}>Full CRM features coming soon. You have admin access.</p>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '16px', marginTop: '32px' }}>
-              {['Client Management', 'Case Pipeline', 'Document Approval', 'Financial Reports', 'Team Management', 'System Settings'].map((feature, idx) => (
-                <div key={idx} style={{ padding: '16px', background: 'white', borderRadius: '8px', border: '2px solid #3b82f6' }}>
-                  <p style={{ fontWeight: '600', color: '#1f2937' }}>{feature}</p>
-                  <p style={{ fontSize: '12px', color: '#6b7280', marginTop: '4px' }}>Coming Soon</p>
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </div>
