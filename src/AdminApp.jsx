@@ -80,6 +80,12 @@ function AdminCRM({ user }) {
       <header style={{ background: 'linear-gradient(135deg, #1f2937, #111827)', padding: '20px 24px', color: 'white' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', maxWidth: '1400px', margin: '0 auto', flexWrap: 'wrap', gap: '16px' }}>
           <div>
+            <a
+              href="https://nordicriser.com/index.html"
+              style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: 'rgba(255,255,255,0.6)', textDecoration: 'none', marginBottom: '6px' }}
+            >
+              ← Back to Website
+            </a>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '4px' }}>
               <Shield size={28} />
               <h1 style={{ fontSize: '24px', fontWeight: 'bold', margin: 0 }}>Nordic Riser Admin Portal</h1>
