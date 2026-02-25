@@ -213,17 +213,7 @@ function AuthPage() {
     
     console.log('Login successful:', userCredential.user);
     
-    // Check if email is verified (only in production)
-    const isUsingEmulator = window.location.hostname === 'localhost' || import.meta.env.VITE_USE_EMULATOR === 'true';
-    
-    if (!isUsingEmulator && !userCredential.user.emailVerified) {
-      setError('Please verify your email before logging in. Check your inbox.');
-      await signOut(auth);
-      setLoading(false);
-      return;
-    }
-    
-    // If verified or using emulator, proceed with login
+    // Proceed with login - email verification warning shown in dashboard
     console.log('Login successful, redirecting to dashboard');
     
     // Small delay to ensure state updates
