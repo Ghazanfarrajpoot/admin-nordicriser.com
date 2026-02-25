@@ -1,0 +1,376 @@
+# Pure file/folder list
+# NORDIC RISER AB - COMPLETE PROJECT STRUCTURE
+**Last Updated:** December 22, 2025
+**Project Status:** Production (Public Website + Member Portal + Admin Portal)
+
+---
+
+## 📁 ROOT DIRECTORY STRUCTURE
+nordic-riser-portal/ # ROOT PROJECT FOLDER
+│
+├── 📁 src/ # SOURCE CODE
+│ │
+│ ├── 📄 main.jsx # MEMBER PORTAL ENTRY POINT
+│ ├── 📄 admin-main.jsx # ADMIN PORTAL ENTRY POINT
+│ ├── 📄 App.jsx # MEMBER PORTAL APP (ROUTING)
+│ ├── 📄 AdminApp.jsx # ADMIN PORTAL APP
+│ ├── 📄 App-test.jsx # TEST FILE
+│ ├── 📄 index.css # GLOBAL STYLES
+│ │
+│ ├── 📁 components/ # REACT COMPONENTS
+│ │ ├── 📄 DocumentVault.jsx # DOCUMENT UPLOAD/VIEW COMPONENT
+│ │ ├── 📄 DocumentUploader.jsx # UPLOAD COMPONENT (ALTERNATE)
+│ │ ├── 📄 Login.jsx # MEMBER LOGIN
+│ │ ├── 📄 AdminLogin.jsx # ADMIN LOGIN
+│ │ ├── 📄 ProtectedRoute.jsx # AUTH PROTECTED ROUTES
+│ │ ├── 📄 SecureMessaging.jsx # MESSAGING COMPONENT
+│ │ ├── 📄 PaymentCenter.jsx # PAYMENT COMPONENT
+│ │ ├── 📄 CaseTracking.jsx # CASE TRACKING COMPONENT
+│ │ └── 📄 ... (other UI components)
+│ │
+│ ├── 📁 contexts/ # REACT CONTEXTS
+│ │ └── 📄 AuthContext.jsx # AUTHENTICATION CONTEXT
+│ │
+│ └── 📁 firebase/ # FIREBASE CONFIGURATION
+│ └── 📄 config.js # FIREBASE INIT & EMULATOR CONFIG
+│
+├── 📁 dist/ # BUILT MEMBER PORTAL (FIREBASE HOSTING)
+│ ├── 📄 index.html
+│ ├── 📁 assets/
+│ │ ├── 📄 index-.js # BUNDLED JAVASCRIPT
+│ │ └── 📄 index-.css # BUNDLED CSS
+│ └── 📄 ... (other static assets)
+│
+├── 📁 dist-admin/ # BUILT ADMIN PORTAL (FIREBASE HOSTING)
+│ ├── 📄 index.html
+│ ├── 📁 assets/
+│ └── 📄 ... (other static assets)
+│
+├── 📄 firebase.json # FIREBASE PROJECT CONFIGURATION
+├── 📄 .firebaserc # FIREBASE TARGET MAPPINGS
+├── 📄 storage.rules # FIREBASE STORAGE SECURITY RULES
+├── 📄 firestore.rules # FIRESTORE SECURITY RULES
+├── 📄 firestore.indexes.json # FIRESTORE INDEXES
+│
+├── 📄 vite.config.js # VITE BUILD CONFIGURATION
+├── 📄 package.json # NPM DEPENDENCIES & SCRIPTS
+├── 📄 package-lock.json # LOCK FILE
+│
+├── 📄 .env # ENVIRONMENT VARIABLES (VITE_ PREFIX)
+├── 📄 .gitignore # GIT IGNORE FILE
+│
+├── 📄 index.html # MEMBER PORTAL ENTRY TEMPLATE
+├── 📄 admin.html # ADMIN PORTAL ENTRY TEMPLATE
+│
+└── 📄 PROJECT_REFERENCE.md # PROJECT DOCUMENTATION (CREATED)
+
+text
+
+---
+
+## 🔗 FIREBASE PROJECT STRUCTURE
+
+### **Project:** `nordicrisercom`
+Firebase Project: nordicrisercom
+│
+├── 🔥 Hosting (Multi-site)
+│ ├── ✅ Site 1: nordicrisercom (Member Portal)
+│ │ ├── Target: nordicrisercom
+│ │ ├── Directory: dist/
+│ │ ├── URLs:
+│ │ │ ├── nordicrisercom.web.app
+│ │ │ └── portal.nordicriser.com (Custom Domain)
+│ │ └── Status: ✅ LIVE
+│ │
+│ ├── ✅ Site 2: nordicrisercom-admin (Admin Portal)
+│ │ ├── Target: nordicrisercom-admin
+│ │ ├── Directory: dist-admin/
+│ │ ├── URLs:
+│ │ │ └── nordicrisercom-admin.web.app
+│ │ └── Status: ✅ LIVE
+│ │
+│ └── ⏳ Site 3: nordicrisercom-e3a53 (Unused)
+│
+├── 🔐 Authentication
+│ ├── Providers: Email/Password
+│ ├── Features: Email verification required
+│ ├── User Roles: Member / Admin
+│ └── Status: ✅ LIVE
+│
+├── 🗄️ Firestore Database
+│ ├── Collections:
+│ │ ├── users/ (User profiles & roles)
+│ │ ├── documents/ (File metadata)
+│ │ ├── cases/ (Case management)
+│ │ └── messages/ (Secure messaging)
+│ └── Status: ✅ CONFIGURED
+│
+├── 💾 Storage
+│ ├── Bucket: gs://nordicrisercom.firebasestorage.app
+│ ├── Structure:
+│ │ ├── users/{userId}/ (Private user files)
+│ │ ├── cases/{caseId}/ (Shared case documents)
+│ │ └── public/ (Templates - read only)
+│ └── Status: ✅ CONFIGURED, ⏳ TESTING UPLOADS
+│
+└── ⚡ Cloud Functions (Planned)
+└── Status: ⏳ NOT YET IMPLEMENTED
+
+text
+
+---
+
+## 🌐 DOMAIN & DNS STRUCTURE
+
+### **Primary Domain:** `nordicriser.com`
+nordicriser.com (Root Domain)
+│
+├── www.nordicriser.com → GitHub Pages (Redirect)
+│ ├── Platform: GitHub Pages
+│ ├── Type: Static Website
+│ └── Purpose: Marketing & Lead Generation
+│
+├── portal.nordicriser.com → Firebase Hosting (Member Portal)
+│ ├── Platform: Firebase Hosting
+│ ├── Type: React SPA
+│ ├── Target: nordicrisercom
+│ └── Status: ✅ LIVE
+│
+└── ⏳ admin.nordicriser.com → Firebase Hosting (Future - Admin Portal)
+├── Platform: Firebase Hosting
+├── Type: React SPA
+├── Target: nordicrisercom-admin
+└── Status: PLANNED
+
+text
+
+### **Current DNS Records (GoDaddy):**
+| Type  | Name    | Value                           | Purpose |
+|-------|---------|---------------------------------|---------|
+| A     | @       | 185.199.108.153 (GitHub Pages) | Public Site |
+| A     | @       | 185.199.109.153                 | Public Site |
+| A     | @       | 185.199.110.153                 | Public Site |
+| A     | @       | 185.199.111.153                 | Public Site |
+| CNAME | www     | nordicriser.github.io           | Public Site |
+| CNAME | portal  | nordicrisercom.web.app          | Member Portal |
+| MX    | @       | Microsoft 365 servers           | Email |
+| TXT   | @       | Microsoft 365 verify            | Email |
+
+---
+
+## 🛠️ BUILD & DEPLOYMENT SYSTEM
+
+### **Build Configuration (vite.config.js):**
+```javascript
+// Separate builds for member/admin portals
+export default defineConfig(({ mode }) => {
+  const isAdmin = mode === 'admin';
+  return {
+    build: {
+      outDir: isAdmin ? 'dist-admin' : 'dist',
+      rollupOptions: {
+        input: isAdmin ? 'admin.html' : 'index.html'
+      }
+    }
+  };
+});
+Package.json Scripts:
+json
+{
+  "scripts": {
+    "dev": "vite",                           // Member dev server
+    "dev:admin": "vite --mode admin",        // Admin dev server
+    "build": "vite build",                   // Build member portal
+    "build:admin": "vite build --mode admin && cd dist-admin && ren admin.html index.html",
+    "deploy": "npm run build && firebase deploy --only hosting:nordicrisercom",
+    "deploy:admin": "npm run build:admin && firebase deploy --only hosting:nordicrisercom-admin"
+  }
+}
+Firebase.json (Hosting Section):
+json
+{
+  "hosting": [
+    {
+      "target": "nordicrisercom",
+      "public": "dist",
+      "rewrites": [{ "source": "**", "destination": "/index.html" }]
+    },
+    {
+      "target": "nordicrisercom-admin",
+      "public": "dist-admin",
+      "headers": [{
+        "source": "**",
+        "headers": [
+          { "key": "Cache-Control", "value": "no-cache, no-store, must-revalidate" }
+        ]
+      }],
+      "rewrites": [{ "source": "**", "destination": "/index.html" }]
+    }
+  ]
+}
+📊 DATA MODELS
+Firestore Collections:
+1. users Collection:
+
+javascript
+{
+  uid: "firebase-auth-uid",
+  email: "user@email.com",
+  firstName: "John",
+  lastName: "Doe",
+  phone: "+1234567890",
+  country: "US",
+  goals: ["business", "investment"],
+  services: ["company", "legal"],
+  role: "member", // or "admin"
+  emailVerified: true,
+  profileComplete: true,
+  createdAt: "2025-12-22T10:30:00Z",
+  lastLogin: "2025-12-22T10:35:00Z"
+}
+2. documents Collection:
+
+javascript
+{
+  userId: "user-uid",
+  fileName: "visa_application.pdf",
+  storagePath: "users/user123/visa_application.pdf",
+  downloadURL: "https://...",
+  fileType: "application/pdf",
+  fileSize: 2048000,
+  category: "identity", // identity, financial, legal, business, other
+  status: "pending", // pending, approved, rejected
+  uploadedAt: "2025-12-22T12:00:00Z",
+  reviewedAt: null,
+  reviewedBy: null,
+  comments: ""
+}
+🚀 DEPLOYMENT PIPELINE
+Member Portal Deployment:
+bash
+npm run build              # Build to dist/
+firebase deploy --only hosting:nordicrisercom
+# OR
+npm run deploy             # Combined build + deploy
+Admin Portal Deployment:
+bash
+npm run build:admin        # Build to dist-admin/
+firebase deploy --only hosting:nordicrisercom-admin
+# OR
+npm run deploy:admin       # Combined build + deploy
+Storage Rules Deployment:
+bash
+firebase deploy --only storage
+🔐 SECURITY SUMMARY
+Implemented:
+✅ Separate Member/Admin portals
+
+✅ Firebase Authentication with email verification
+
+✅ Protected routes with ProtectedRoute component
+
+✅ Role-based access control (Member vs Admin)
+
+✅ Storage security rules
+
+✅ HTTPS enforcement (Firebase automatic)
+
+✅ Cache-control headers for admin portal
+
+Pending:
+⏳ App Check configuration
+
+⏳ Advanced audit logging
+
+⏳ Data encryption at rest
+
+⏳ Regular security audits
+
+📈 PROJECT ROADMAP
+Phase 1: ✅ COMPLETED (Dec 2025)
+Public website on GitHub Pages
+
+Member Portal MVP (4 features)
+
+Admin Portal with access control
+
+Firebase multi-site hosting
+
+Custom domain: portal.nordicriser.com
+
+Phase 2: 🚧 CURRENT (Q1 2026)
+Firebase Authentication integration ✅
+
+Firestore Database setup ⏳
+
+Document upload functionality ⏳
+
+Basic admin features ⏳
+
+Phase 3: 📅 PLANNED (Q2 2026)
+Payment integration (Stripe)
+
+Email notifications
+
+Advanced admin dashboard
+
+Custom domain for admin portal
+
+Phase 4: 🔮 FUTURE (H2 2026)
+Mobile app (React Native)
+
+Advanced analytics
+
+API development
+
+Multi-language support
+
+🆘 TROUBLESHOOTING COMMANDS
+Common Issues & Fixes:
+1. Emulator Java Error:
+
+bash
+# Install Java JDK 21+ first
+firebase emulators:start --only auth,storage,hosting  # Start without Firestore
+2. Deploy Target Not Configured:
+
+bash
+firebase target:apply hosting nordicrisercom nordicrisercom
+firebase target:apply hosting nordicrisercom-admin nordicrisercom-admin
+3. Build/Deploy Issues:
+
+bash
+# Clean rebuild
+rmdir /s /q dist dist-admin
+npm run build
+npm run build:admin
+4. Storage Rules Test:
+
+bash
+# Test locally with emulators
+firebase emulators:start --only storage,auth
+# Then access: http://127.0.0.1:4000/storage
+📞 SUPPORT CONTEXT
+For future reference, this project has:
+
+React 18 + Vite frontend
+
+Firebase backend (Auth, Firestore, Storage, Hosting)
+
+Multi-site hosting configuration
+
+Custom domains via GoDaddy DNS
+
+Currently testing Storage uploads with emulators
+
+API key issue fixed for emulator mode
+
+Upload path: users/{userId}/ (not documents/{userId}/)
+
+Current Focus: Testing Firebase Storage upload functionality with local emulators.
+
+text
+
+---
+
+**Save this as `PROJECT_STRUCTURE.md` in your project root.** This gives you the complete picture of your entire project for future reference.

@@ -1,0 +1,18 @@
+{
+  "projects": {
+    "default": "nordicrisercom"
+  },
+  "targets": {
+    "nordicrisercom": {
+      "hosting": {
+        "nordicrisercom-admin": [
+          "nordicrisercom-admin"
+        ],
+        "nordicrisercom": [
+          "nordicrisercom"
+        ]
+      }
+    }
+  },
+  "etags": {}
+}

@@ -1,0 +1,60 @@
+rules_version = '2';
+
+// Helper function to check if user is admin
+function isAdmin() {
+  return request.auth != null && (
+    request.auth.token.email.matches('.*@nordicriser.com$') ||
+    request.auth.token.email in [
+      'admin@nordicriser.com'
+    ]
+  );
+}
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // ==================== USER PERSONAL FILES ====================
+    match /users/{userId}/{allPaths=**} {
+      allow read: if request.auth != null && (
+        request.auth.uid == userId ||
+        isAdmin()
+      );
+      
+      allow write: if request.auth != null && (
+        request.auth.uid == userId ||
+        isAdmin()
+      ) && (
+        request.resource.size < 10 * 1024 * 1024 &&
+        request.resource.contentType.matches('^application/pdf$|^image/.*|^application/msword$|^application/vnd.openxmlformats-officedocument.*|^application/vnd.ms-excel.*')
+      );
+    }
+    
+    // ==================== CASE DOCUMENTS ====================
+    match /cases/{caseId}/{allPaths=**} {
+      allow read: if request.auth != null && (
+        exists(/databases/$(database)/documents/cases/$(caseId)/participants/$(request.auth.uid)) ||
+        isAdmin()
+      );
+      
+      allow write: if request.auth != null && (
+        isAdmin() ||
+        get(/databases/$(database)/documents/cases/$(caseId)).data.ownerId == request.auth.uid
+      ) && (
+        request.resource.size < 25 * 1024 * 1024
+      );
+    }
+    
+    // ==================== PUBLIC TEMPLATES ====================
+    match /public/{allPaths=**} {
+      allow read: if request.auth != null;
+      allow write: if isAdmin();
+    }
+    
+    // ==================== TEMP UPLOADS ====================
+    match /temp/{userId}/{fileName} {
+      allow write: if request.auth != null && request.auth.uid == userId;
+      allow read: if request.auth != null && request.auth.uid == userId;
+      allow delete: if request.auth != null;
+    }
+  }
+}
