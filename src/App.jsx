@@ -110,13 +110,10 @@ function App() {
         } />
         
         <Route path="/documents" element={
-  <ProtectedRoute>
-    <div style={{ padding: '40px', textAlign: 'center' }}>
-      <h1>Document Vault Test</h1>
-      <DocumentVault />
-    </div>
-  </ProtectedRoute>
-} />
+          <ProtectedRoute>
+            <DocumentVault />
+          </ProtectedRoute>
+        } />
 
         <Route path="/messages" element={
           <ProtectedRoute>
