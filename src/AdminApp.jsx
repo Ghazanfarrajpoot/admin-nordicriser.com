@@ -7,12 +7,11 @@ import {
   sendEmailVerification
 } from 'firebase/auth';
 import {
-  getDoc, doc, collection, getDocs, query, orderBy, limit, where
+  getDoc, doc, collection, getDocs
 } from 'firebase/firestore';
 import {
   LogOut, Shield, Users, FileText, MessageSquare, BarChart3,
-  Mail, ChevronRight, Clock, CheckCircle, AlertCircle, RefreshCw,
-  Search, Eye
+  Mail, RefreshCw, Search
 } from 'lucide-react';
 
 // ============= ADMIN CRM =============
@@ -22,7 +21,14 @@ function AdminCRM({ user }) {
   const [clients, setClients] = useState([]);
   const [cases, setCases] = useState([]);
   const [loadingData, setLoadingData] = useState(true);
+  const [fetchError, setFetchError] = useState('');
   const [searchQuery, setSearchQuery] = useState('');
+
+  const formatDate = (createdAt) => {
+    if (!createdAt) return '—';
+    if (createdAt.toDate) return createdAt.toDate().toLocaleDateString();
+    return new Date(createdAt).toLocaleDateString();
+  };
 
   const handleLogout = async () => {
     await signOut(auth);
@@ -30,6 +36,7 @@ function AdminCRM({ user }) {
 
   const fetchStats = async () => {
     setLoadingData(true);
+    setFetchError('');
     try {
       const [usersSnap, casesSnap, msgSnap] = await Promise.all([
         getDocs(collection(db, 'users')),
@@ -49,6 +56,7 @@ function AdminCRM({ user }) {
       setCases(caseDocs);
     } catch (err) {
       console.error('Error fetching admin data:', err);
+      setFetchError('Failed to load data: ' + err.message);
     } finally {
       setLoadingData(false);
     }
@@ -156,6 +164,12 @@ function AdminCRM({ user }) {
       </div>
 
       <div style={{ padding: '32px 24px', maxWidth: '1400px', margin: '0 auto' }}>
+        {fetchError && (
+          <div style={{ background: '#fee2e2', border: '1px solid #fecaca', color: '#991b1b', padding: '12px 16px', borderRadius: '8px', marginBottom: '24px', fontSize: '14px' }}>
+            ⚠️ {fetchError}
+          </div>
+        )}
+
         {/* Dashboard Tab */}
         {activeTab === 'dashboard' && (
           <div>
@@ -208,7 +222,7 @@ function AdminCRM({ user }) {
                         <p style={{ fontSize: '13px', color: '#6b7280' }}>{client.email} {client.country ? `• ${client.country}` : ''}</p>
                       </div>
                       <span style={{ fontSize: '12px', color: '#6b7280', flexShrink: 0 }}>
-                        {client.createdAt ? new Date(client.createdAt).toLocaleDateString() : ''}
+                        {formatDate(client.createdAt)}
                       </span>
                     </div>
                   ))}
@@ -302,7 +316,7 @@ function AdminCRM({ user }) {
                           {client.goals?.slice(0, 2).join(', ') || '—'}
                         </td>
                         <td style={{ padding: '16px', fontSize: '13px', color: '#6b7280' }}>
-                          {client.createdAt ? new Date(client.createdAt).toLocaleDateString() : '—'}
+                          {formatDate(client.createdAt)}
                         </td>
                         <td style={{ padding: '16px' }}>
                           <span style={{ padding: '4px 10px', borderRadius: '12px', fontSize: '12px', fontWeight: '600', background: '#d1fae5', color: '#065f46' }}>
@@ -378,7 +392,7 @@ function AdminCRM({ user }) {
 }
 
 // ============= ADMIN LOGIN =============
-function AdminLogin({ onLogin }) {
+function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -469,7 +483,6 @@ function AdminLogin({ onLogin }) {
 // ============= MAIN ADMIN APP =============
 export default function AdminApp() {
   const [user, setUser] = useState(null);
-  const [userRole, setUserRole] = useState(null);
   const [loading, setLoading] = useState(true);
   const [accessError, setAccessError] = useState('');
 
@@ -481,19 +494,15 @@ export default function AdminApp() {
           const userDoc = await getDoc(doc(db, 'users', currentUser.uid));
           if (userDoc.exists()) {
             const role = userDoc.data().role || 'member';
-            setUserRole(role);
             if (role !== 'admin') {
               setAccessError('Access Denied: Administrator credentials required.');
             }
           } else {
-            // Check email domain fallback
             const isAdmin = currentUser.email?.endsWith('@nordicriser.com') || currentUser.email?.includes('admin');
-            setUserRole(isAdmin ? 'admin' : 'member');
             if (!isAdmin) setAccessError('Access Denied: Administrator credentials required.');
           }
         } catch (err) {
           console.error('Role check error:', err);
-          setUserRole('member');
           setAccessError('Unable to verify admin permissions.');
         }
       } else {
