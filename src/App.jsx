@@ -559,6 +559,12 @@ function MemberPortal({ user }) {
     <div style={{ minHeight: '100vh', background: '#f3f4f6' }}>
       <header style={{ background: 'white', boxShadow: '0 1px 3px rgba(0,0,0,0.1)', padding: '20px 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
         <div>
+          <a
+            href="https://nordicriser.com/index.html"
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', fontSize: '13px', color: '#6b7280', textDecoration: 'none', marginBottom: '6px' }}
+          >
+            ← Back to Website
+          </a>
           <h1 style={{ fontSize: '24px', fontWeight: 'bold', color: '#1e3a8a', marginBottom: '4px' }}>Member Portal</h1>
           <p style={{ fontSize: '14px', color: '#6b7280' }}>Nordic Riser AB</p>
         </div>
