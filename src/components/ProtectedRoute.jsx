@@ -21,7 +21,7 @@ export function ProtectedRoute({ children, requireAdmin = false }) {
 
   if (!requireAdmin && userRole === 'admin') {
     // Admin trying to access member area
-    return <Navigate to="/admin/dashboard" />;
+    return <Navigate to="/dashboard" />;
   }
 
   return children;

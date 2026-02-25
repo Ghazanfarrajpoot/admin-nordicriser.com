@@ -1,52 +1,37 @@
 // src/components/AdminLogin.jsx
-import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebase/config';
 
 function AdminLogin() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
-  
-  const { login, userRole } = useAuth();
-  const navigate = useNavigate();
 
-  // Redirect if already logged in as admin
-  useEffect(() => {
-    if (userRole === 'admin') {
-      navigate('/admin/dashboard');
-    }
-  }, [userRole, navigate]);
+  const navigate = useNavigate();
 
   async function handleSubmit(e) {
     e.preventDefault();
-    
+    setError('');
+    setLoading(true);
     try {
-      setError('');
-      setLoading(true);
-      
-      const result = await login(email, password);
-      
-      if (result.success) {
-        // Check if user is admin (based on email)
-        if (!email.includes('admin') && !email.includes('@nordicriser.com')) {
-          // Not an admin email - log them out
-          const { logout } = useAuth();
-          await logout();
-          setError('Administrator access only. Please use admin credentials.');
-          return;
-        }
-        
-        navigate('/admin/dashboard');
-      } else {
-        setError(result.error);
-      }
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate('/dashboard');
     } catch (err) {
-      setError('Failed to log in');
+      let msg = 'Failed to log in.';
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password' || err.code === 'auth/invalid-credential') {
+        msg = 'Invalid email or password.';
+      } else if (err.code === 'auth/too-many-requests') {
+        msg = 'Too many attempts. Try again later.';
+      } else {
+        msg = err.message.replace('Firebase: ', '');
+      }
+      setError(msg);
+    } finally {
+      setLoading(false);
     }
-    
-    setLoading(false);
   }
 
   return (

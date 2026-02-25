@@ -6,8 +6,8 @@ import {
 } from 'firebase/firestore';
 import {
   Clock, CheckCircle, AlertCircle, FileText, Calendar, Upload,
-  MessageSquare, ChevronRight, ChevronDown, Search, Download,
-  Eye, RefreshCw, TrendingUp, Target, Globe, Home, Briefcase, GraduationCap
+  MessageSquare, ChevronRight, ChevronDown, Search,
+  RefreshCw, TrendingUp, Target, Globe, Home, Briefcase, GraduationCap
 } from 'lucide-react';
 
 const SEED_CASES = [

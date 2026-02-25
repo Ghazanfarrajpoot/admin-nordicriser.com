@@ -44,44 +44,16 @@ export function AuthProvider({ children }) {
 
   // Login user
   const login = async (email, password) => {
-  console.log('🔐 AuthContext login called');
-  
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    
-    console.log('✅ Firebase login successful');
-    
-    // CHECK: Skip email verification for emulator
-    const isEmulator = window.location.hostname.includes('localhost') || 
-                       window.location.hostname.includes('127.0.0.1');
-    
-    if (!isEmulator && !userCredential.user.emailVerified) {
-      console.log('❌ Email not verified (in production)');
-      await signOut(auth); // Sign them out
-      return { 
-        success: false, 
-        error: 'Please verify your email before logging in.' 
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      return { success: true, user: userCredential.user };
+    } catch (error) {
+      return {
+        success: false,
+        error: error.message || 'Login failed'
       };
     }
-    
-    // If emulator OR email verified, continue...
-    const userDoc = await getDoc(doc(db, 'users', userCredential.user.uid));
-    
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      console.log('👤 User role:', userData.role);
-    }
-    
-    return { success: true, user: userCredential.user };
-    
-  } catch (error) {
-    console.error('❌ AuthContext login error:', error);
-    return { 
-      success: false, 
-      error: error.message || 'Login failed' 
-    };
-  }
-};
+  };
 
   // Logout
   async function logout() {
@@ -118,14 +90,16 @@ export function AuthProvider({ children }) {
 
   // Listen for auth state changes
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user) {
-        // User is signed in
-        const role = determineUserRole(user);
-        setUserRole(role);
+        try {
+          const userDoc = await getDoc(doc(db, 'users', user.uid));
+          setUserRole(userDoc.exists() ? (userDoc.data().role || 'member') : determineUserRole(user));
+        } catch {
+          setUserRole(determineUserRole(user));
+        }
         setCurrentUser(user);
       } else {
-        // User is signed out
         setCurrentUser(null);
         setUserRole(null);
       }

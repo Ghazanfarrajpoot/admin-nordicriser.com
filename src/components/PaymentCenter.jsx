@@ -5,7 +5,7 @@ import {
   collection, query, where, getDocs, addDoc, doc, updateDoc, serverTimestamp
 } from 'firebase/firestore';
 import {
-  CreditCard, DollarSign, Download, Eye, Calendar, CheckCircle,
+  CreditCard, DollarSign, CheckCircle,
   Clock, AlertCircle, FileText, Plus, RefreshCw, ArrowUpRight
 } from 'lucide-react';
 

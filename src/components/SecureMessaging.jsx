@@ -9,8 +9,7 @@ import {
   orderBy,
   limit,
   onSnapshot,
-  serverTimestamp,
-  Timestamp
+  serverTimestamp
 } from 'firebase/firestore';
 import {
   Send, Lock, User, Clock, Shield, Eye, EyeOff, Users
@@ -25,6 +24,7 @@ function SecureMessaging() {
   const [recipientEmail, setRecipientEmail] = useState('');
   const [showEncryptionKey, setShowEncryptionKey] = useState(false);
   const [encryptionKey, setEncryptionKey] = useState('');
+  const [sendError, setSendError] = useState('');
   const messagesEndRef = useRef(null);
 
   // Simple XOR encryption for demo (use crypto library for production)
@@ -128,7 +128,8 @@ function SecureMessaging() {
       });
 
       setNewMessage('');
-      
+      setSendError('');
+
       // Clear recipient if it was a one-time message
       if (recipientId) {
         setRecipientId('');
@@ -136,7 +137,7 @@ function SecureMessaging() {
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      alert('Failed to send message: ' + error.message);
+      setSendError('Failed to send message: ' + error.message);
     }
   };
 
@@ -518,7 +519,12 @@ function SecureMessaging() {
               padding: '20px',
               background: 'white'
             }}>
-              <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '12px' }}>
+              {sendError && (
+              <div style={{ background: '#fee2e2', color: '#991b1b', padding: '10px 16px', borderRadius: '6px', marginBottom: '12px', fontSize: '13px' }}>
+                {sendError}
+              </div>
+            )}
+            <form onSubmit={handleSendMessage} style={{ display: 'flex', gap: '12px' }}>
                 <input
                   type="text"
                   value={newMessage}
@@ -530,11 +536,7 @@ function SecureMessaging() {
                     border: '1px solid #e5e7eb',
                     borderRadius: '8px',
                     fontSize: '14px',
-                    outline: 'none',
-                    ':focus': {
-                      borderColor: '#3b82f6',
-                      boxShadow: '0 0 0 3px rgba(59, 130, 246, 0.1)'
-                    }
+                    outline: 'none'
                   }}
                 />
                 <button
