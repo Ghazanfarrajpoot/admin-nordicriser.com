@@ -21,9 +21,11 @@ service cloud.firestore {
     match /documents/{documentId} {
       allow create: if request.auth != null;
       allow read: if request.auth != null &&
-        request.auth.uid in resource.data.visibleTo;
+        (request.auth.uid == resource.data.uploadedBy ||
+         request.auth.token.email.matches('.*@nordicriser\\.com'));
       allow update, delete: if request.auth != null &&
-        request.auth.uid == resource.data.uploadedBy;
+        (request.auth.uid == resource.data.uploadedBy ||
+         request.auth.token.email.matches('.*@nordicriser\\.com'));
     }
 
     // Cases collection - members can create/read their own; admins can read/update all

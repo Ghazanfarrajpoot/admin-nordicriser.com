@@ -37,7 +37,10 @@ const DocumentVault = () => {
       docs.sort((a, b) => (b.uploadedAt || 0) - (a.uploadedAt || 0));
       setFiles(docs);
       setLoading(false);
-    }, () => setLoading(false));
+    }, (err) => {
+      setError('Failed to load documents: ' + err.message);
+      setLoading(false);
+    });
     return unsubscribe;
   }, [user]);
 
